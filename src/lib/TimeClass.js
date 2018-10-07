@@ -21,6 +21,10 @@ export default class TimeClass {
     });
   }
 
+  rawValues(date) {
+    return this._getOpenCloseValues(date.weekdayLong);
+  }
+
   getDate(date) {
     const dayValues = this._getOpenCloseValues(date.weekdayLong);
     if (!dayValues) return false; 

@@ -1,3 +1,15 @@
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
+:root {
+  --bg-colour: #F1F3F8;
+  --sub-colour: #9EA2A9;
+  --main-colour: #767B83;
+  --main-blue: #676EE8;
+  --hover-colour: #DCE0E6;
+}
+
 body {
   margin: 0;
   padding: 0;
