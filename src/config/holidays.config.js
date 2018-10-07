@@ -42,3 +42,5 @@ const holidays = [
         'end'         : '01-01-2018'
     }
 ];
+
+module.exports = holidays;

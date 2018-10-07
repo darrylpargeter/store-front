@@ -43,3 +43,5 @@ const times =  {
 
     }
 };
+
+module.exports = times;
