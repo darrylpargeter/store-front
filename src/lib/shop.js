@@ -34,13 +34,17 @@ export default class Shop {
    * @return {Array<int>}
    */
   _checkTimes(date) {
-    const queryDate = date ? DateTime.fromFormat(date, 'd/M/y h:m') : DateTime.local();
+    const queryDate = date ? date : DateTime.local();
     const isPublicHoliday = this.holidays.isPublicHoliday(queryDate);
     const testValues = this.times.getDate(queryDate);
 
     if (!testValues || isPublicHoliday) return false;
 
     return this._testTimeValues(testValues, queryDate);
+  }
+
+  getTimes(date) {
+    return this.times.rawValues(date); 
   }
 
 

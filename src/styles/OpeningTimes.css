@@ -1,0 +1,7 @@
+.span-all {
+  grid-column: 1 / span 3;
+}
+
+h2 {
+  color: var(--sub-colour);
+}
