@@ -1,0 +1,27 @@
+.hover {
+  position: absolute;
+  top: 20%;
+  left: 50%;
+  z-index: 400;
+  background: var(--bg-colour);
+  box-shadow: 0 2px 6px 0 hsla(0,0%,0%,.2);
+  border-radius: 4px;
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.hover div {
+  padding: 12px 10px;
+}
+
+.hover h2 {
+  color: var(--main-colour);
+  margin: 0;
+}
+
+.hover h5 {
+  text-align: center;
+  color: var(--sub-colour);
+}

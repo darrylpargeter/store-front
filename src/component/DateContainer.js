@@ -12,11 +12,12 @@ export default class DateContainer extends Component {
 
   buildDateArray() {
     let startDate = DateTime.local();
+    const { shop } = this.props;
     const output = [];
 
     for (let i = 0; i < 7; i += 1) {
-      const open = this.props.shop.isOpen(startDate);
-      const times = this.props.shop.getTimes(startDate);
+      const open = shop.isOpen(startDate);
+      const times = shop.getTimes(startDate);
       output.push(<DateShow
         day={`${startDate.day}`.padStart(2, '0')}
         openOrClosed={open ? 'Open' : 'Closed'}
@@ -28,13 +29,14 @@ export default class DateContainer extends Component {
       startDate = startDate.plus({ day: 1 }).set({ hour: 9 });
     }
 
-    console.log(output)
     return output;
   }
 
   render() {
+    const { blur } = this.props;
+    const wrapperClasses = `date-container-wrapper ${blur ? 'blur' : ''}`;
     return (
-      <div className='date-container-wrapper'>
+      <div className={wrapperClasses}>
         {this.dateArray.map(value => value)}
       </div>
     )

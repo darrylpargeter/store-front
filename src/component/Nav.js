@@ -2,9 +2,10 @@ import React from 'react';
 import '../styles/Nav.css';
 
 
-const Nav = () => (
+const Nav = ({ toggleHover, search}) => (
   <div className='nav-wrapper'>
-    <h1>Nav</h1>
+    <h4 onClick={search}>Search</h4>
+    <h4 className='public-holiday' onMouseEnter={toggleHover} onMouseLeave={toggleHover}>Public Holidays</h4>
   </div>
 );
 

@@ -1,4 +1,10 @@
 .date-container-wrapper {
   display: grid;
   grid-template-columns: repeat(7, 1fr);
+  transition: all .5s ease;
+}
+
+.blur {
+  filter: blur(4px);
+  transition: all .5s ease;
 }

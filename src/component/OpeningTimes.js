@@ -7,7 +7,7 @@ export default class OpeningTimes extends Component {
   getTimeOfDayRemaining() {
     const end = DateTime.local().set({ hour: 17, minute: 0 });
     const start = DateTime.local().set({ hour: 9, minute: 0 });
-    const current = DateTime.local().set({ hour: 16 })
+    const current = DateTime.local();
     const total = end - start;
     const elapsed = current - start;
     const precent = ((elapsed / total) * 100).toFixed(0);
@@ -38,11 +38,3 @@ export default class OpeningTimes extends Component {
     );
   }
 }
-
-/*
-
-    <div className='openTimes'>
-      <div className='times'>
-      </div>
-    </div>
-    */
