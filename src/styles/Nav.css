@@ -2,6 +2,11 @@
   background: var(--bg-colour);
 }
 
+.query {
+  user-select: none;
+  cursor: pointer;
+}
+
 .public-holiday {
   user-select: none;
 }

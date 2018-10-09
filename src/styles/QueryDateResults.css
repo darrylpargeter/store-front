@@ -1,0 +1,46 @@
+.query-results-wrapper {
+  width: 100%;
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  padding: 12px 10px;
+}
+.store-info {
+  display: grid;
+  grid-template-rows: .5fr .5fr 1fr;
+  align-items: center;
+}
+
+.store-info .currently {
+  justify-self: center;
+  align-self: start;
+  color: var(--main-colour);
+}
+
+.open {
+  justify-self: center;
+  align-self: start;
+  color: var(--main-blue);
+}
+.closed {
+  justify-self: center;
+  align-self: start;
+  color: var(--error-colour);
+}
+
+.store-info div {
+  justify-self: center;
+  align-self: start;
+}
+
+
+.queryButtons {
+  display: flex;
+  justify-content: space-between;
+}
+
+.search-button, .back-button {
+  color: var(--sub-colour);
+  user-select: none;
+  cursor: pointer;
+}
