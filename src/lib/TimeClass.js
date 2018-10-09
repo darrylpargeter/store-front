@@ -72,7 +72,7 @@ export default class TimeClass {
    * @return {boolean}
    */
   afterLunch(date) {
-    return (date.hour >= 12 && date.minute < 20) || date.hour > 13 ? true : false;
+    return (date.hour >= 12 && date.minute >= 20) || date.hour > 13 ? true : false;
   }
 
   /**

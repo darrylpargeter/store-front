@@ -147,7 +147,7 @@ export default class Shop {
 
   nextOpen(date) {
     let queryDate = date ? date : DateTime.local();
-    if (this.isOpen(queryDate)) return queryDate.toJSDate();
+    if (this.isOpen(queryDate)) return queryDate;
     
     const gapInOpeningTimes = this.updateAfterGap(queryDate);
 
@@ -155,12 +155,18 @@ export default class Shop {
       const isAfterLunch = this.times.afterLunch(queryDate);
 
       if (isAfterLunch) {
-        const updatedDate = queryDate.plus({ day: 1 }).startOf('day');
-        const open = this.times.getDate(updatedDate);
+        const isAfter5 = this.times.after5(queryDate);
+        if (isAfter5) {
+          const updatedDate = queryDate.plus({ day: 1 }).startOf('day');
+          const open = this.times.getDate(updatedDate);
 
-        const gapInOpeningTimes = this.updateAfterGap(updatedDate);
+          const gapInOpeningTimes = this.updateAfterGap(updatedDate);
 
-        return gapInOpeningTimes ? gapInOpeningTimes[0] : open[0];
+          return gapInOpeningTimes ? gapInOpeningTimes[0] : open[0];
+        }
+        const open = this.times.getDate(queryDate);
+
+        return open[2];
       }
 
       const isBeforeOpen = this.times.beforeOpen(queryDate);
@@ -191,6 +197,6 @@ export default class Shop {
       return isAfterLunch ? closed[3] : closed[1];
     } 
 
-    return queryDate.toJSDate();
+    return queryDate;
   };
 }

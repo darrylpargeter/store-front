@@ -8,6 +8,7 @@
   --main-colour: #767B83;
   --main-blue: #676EE8;
   --hover-colour: #DCE0E6;
+  --error-colour: #F70606; 
 }
 
 body {

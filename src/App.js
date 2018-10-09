@@ -6,7 +6,7 @@ import hoildays from './config/holidays.config';
 import Nav from './component/Nav';
 import DateContainer from './component/DateContainer';
 import PublicHoliday from './component/PublicHolidays';
-import Search from './component/Search';
+import PopUp from './component/PopUp';
 import './App.css';
 
 const Shop = new ShopClass(times, hoildays); 
@@ -22,7 +22,6 @@ class App extends Component {
     };
     this.toggleHover = this.toggleHover.bind(this);
     this.onSearchClick = this.onSearchClick.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
   toggleHover(event) {
     this.setState({
@@ -39,11 +38,6 @@ class App extends Component {
     });
   }
 
-  onSubmit(input) {
-    // TODO;
-    const date = DateTime.fromFormat(input, 'dd/MM/yyyy H:mm')
-    console.log(Shop.queryDate(date));
-  }
   render() {
     return (
     <div className='wrapper'>
@@ -51,10 +45,13 @@ class App extends Component {
           y={this.state.y}
           holidays={Shop.getPublicHolidays()} />
         : ''}
-        {this.state.search ? <Search
+
+        {this.state.search ? <PopUp
+          shop={Shop}
           back={this.onSearchClick}
-          submit={this.onSubmit}
+          showSeach={this.state.search}
         /> : ''}
+
         <Nav toggleHover={this.toggleHover} search={this.onSearchClick}/>
         <DateContainer shop={Shop} blur={this.state.blur} />
       </div>
