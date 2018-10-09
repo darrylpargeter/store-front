@@ -1,3 +1,7 @@
 .nav-wrapper {
   background: var(--bg-colour);
 }
+
+.public-holiday {
+  user-select: none;
+}

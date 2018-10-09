@@ -13,13 +13,21 @@ export default class HolidayClass {
     this.publicHolidayEnd = value;
   }
 
-  _formatDate(dateStr) {
-    const newDateStr = dateStr.replace(/-/g, '/');
-
-    console.log(newDateStr);
-    return new Date(newDateStr);
+  /**
+   * Returns the Raw public holidays values
+   *
+   * @return {Array<Object>}
+   */
+  getRawPublicHolidays() {
+    return this.holidays;
   }
 
+  /**
+   * Checks to see if the past dates is a public holiday
+   *
+   * @param {Date} date
+   * @return {boolean}
+   */
   isPublicHoliday(date) {
     let isPublicHoliday = false;
 
@@ -36,6 +44,12 @@ export default class HolidayClass {
     return isPublicHoliday;
   }
 
+  /**
+   * Loops until it hits the first non public holiday 
+   * 
+   * @param {Date} date
+   * @return {Date}
+   */
   getNextNonPublicHoliday(date) {
     let isPublicHoliday = true;
 

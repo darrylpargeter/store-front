@@ -43,151 +43,154 @@ export default class Shop {
     return this._testTimeValues(testValues, queryDate);
   }
 
+  /**
+   * Get the an Object that has the display values for a date queryed
+   *
+   * @param {Date} date
+   * @return {Object}
+   */
+  queryDate(date) {
+    return {
+      isOpen: this.isOpen(date),
+      isClosed: this.isClosed(date),
+      nextOpen: this.nextOpen(date),
+      nextClosed: this.nextClosed(date),
+      date,
+    };
+  }
+
+  /**
+   * Get a list of the pasted date open and closed times
+   * 
+   * @param {Date} date
+   * @return {Object}
+   */
   getTimes(date) {
     return this.times.rawValues(date); 
   }
 
+  /**
+   * get a List of the public holidays defined
+   *
+   * @return {Array<Object>}
+   */
+  getPublicHolidays() {
+    return this.holidays.getRawPublicHolidays();
+  }
+
+  /**
+   * Is the shop open on the provided date/time
+   * If provided a DateTime object, check relative to that, otherwise use now
+   *
+   * @param {Date} date
+   * @return {boolean}
+   */
+
+  isOpen(date) {
+    return this._checkTimes(date);
+  };
 
 
-    /**
-     * Is the shop open on the provided date/time
-     * If provided a DateTime object, check relative to that, otherwise use now
-     *
-     * @param {Date} date
-     * @return {boolean}
-     */
+  /**
+   * Is the shop closed on the provided date/time
+   * If provided a DateTime object, check relative to that, otherwise use now
+   *
+   * @param {Date} date
+   * @return {boolean}
+   */
 
-    isOpen(date) {
-      return this._checkTimes(date);
-    };
+  isClosed(date) {
+    return !this._checkTimes(date);
+  };
 
+  nextDayAfterPublicHoliday(date) {
+    let nextOpenDate = this.holidays.getNextNonPublicHoliday(date);
+    nextOpenDate = nextOpenDate.plus({ day: 1 });
 
-    /**
-     * Is the shop closed on the provided date/time
-     * If provided a DateTime object, check relative to that, otherwise use now
-     *
-     * @param {Date} date
-     * @return {boolean}
-     */
+    return this.times.getDate(nextOpenDate);
+  }
 
-    isClosed(date) {
-      return !this._checkTimes(date);
-    };
+  nextDayAfterWeekEnd(date) {
+    const nextOpenDay = this.times.nextOpenDay(date); 
 
+    return this.times.getDate(nextOpenDay);
+  }
 
-    /**
-     * At what date/time will the shop next be open
-     * If provided a DateTime object, check relative to that, otherwise use now
-     * If the shop is already open, return the provided datetime/now
-     *
-     * @param {Date} date
-     * @return {Date} date
-     */
+  /**
+   * Checks to see if the date falls between a weekend or public holiday
+   * 
+   * @param {Date} date
+   * @return {Arary<Date>|boolean}
+   */
+  updateAfterGap(date) {
+    const isPublicHoliday = this.holidays.isPublicHoliday(date);
+    const isWeekend = this.times.isWeekend(date);
+    if (isPublicHoliday) {
+      return this.nextDayAfterPublicHoliday(date);
+    }
 
-    nextOpen(date) {
-      // TODO: factor in during lunch
-      let queryDate = date ? DateTime.fromFormat(date, 'd/M/y h:m') : DateTime.local();
-      const isBeforeOpen = this.times.beforeOpen(queryDate);
+    if (isWeekend) {
+      return this.nextDayAfterWeekEnd(date);
+    }
+
+    return false;
+  }
+
+  /**
+   * At what date/time will the shop next be open
+   * If provided a DateTime object, check relative to that, otherwise use now
+   * If the shop is already open, return the provided datetime/now
+   *
+   * @param {Date} date
+   * @return {Date} date
+   */
+
+  nextOpen(date) {
+    let queryDate = date ? date : DateTime.local();
+    if (this.isOpen(queryDate)) return queryDate.toJSDate();
+    
+    const gapInOpeningTimes = this.updateAfterGap(queryDate);
+
+    if (!gapInOpeningTimes) {
       const isAfterLunch = this.times.afterLunch(queryDate);
-
-      if (isAfterLunch) queryDate = queryDate.plus({ day: 1 }).startOf('day');
-
-      const isPublicHoliday = this.holidays.isPublicHoliday(queryDate);
-      const isWeekend = this.times.isWeekend(queryDate);
-
-      console.log({
-        isBeforeOpen,
-        isAfterLunch,
-        isPublicHoliday,
-        isWeekend,
-      })
-
-      if (isPublicHoliday) {
-        let nextOpenDate = this.holidays.getNextNonPublicHoliday(nextOpenDate);
-        nextOpenDate = nextOpenDate.plus({ day: 1 });
-        const open = this.times.getDate(nextOpenDate);
-
-        return open[0];
-      }
-
-      if (isWeekend) {
-        const nextOpenDay = this.times.nextOpenDay(queryDate); 
-        const open = this.times.getDate(nextOpenDay);
-
-        return open[0];
-      }
-
-      if (isBeforeOpen) {
-        const open = this.times.getDate(queryDate);
-
-        return open[0];
-      }
-
-      if (!isBeforeOpen && !isAfterLunch) {
-        const open = this.times.getDate(queryDate); 
-
-        return open[2];
-      }
-
-    };
-
-
-    /**
-     * At what date/time will the shop next be closed
-     * If provided a DateTime object, check relative to that, otherwise use now
-     * If the shop is already closed, return the provided datetime/now
-     *
-     * @param {Date} date
-     * @return {Date} date
-     */
-    nextClosed(date) {
-      let queryDate = date ? DateTime.fromFormat(date, 'd/M/y h:m') : DateTime.local();
-
-      const isBeforeOpen = this.times.beforeOpen(queryDate);
-      const isAfter5 = this.times.after5(queryDate);
-
-      if (isAfter5) queryDate = queryDate.plus({ day: 1 });
-
-      const isAfterLunch = this.times.afterLunch(queryDate);
-      const isWeekend = this.times.isWeekend(queryDate);
-      const isPublicHoliday = this.holidays.isPublicHoliday(queryDate);
-      console.log(isPublicHoliday);
-
-      if (isPublicHoliday) {
-        console.log('public')
-        const nextDate = queryDate.plus({ day: 1 });
-        if (this.holidays.isPublicHoliday(queryDate)) return nextDate;
-
-        const open = this.times.getDate(nextDate);
-        return open[1];
-      }
-
-      if (isWeekend) {
-        let nextDate = queryDate;
-        if (!isAfter5) nextDate = queryDate.plus({ day: 1 });
-        if (this.holidays.isPublicHoliday(queryDate)) return nextDate;
-
-        if (this.times.isWeekend(nextDate)) {
-          return nextDate;
-        }
-
-        const open = this.times.getDate(nextDate);
-
-        return open[1];
-      }
-
-      if (isBeforeOpen) {
-        if (isAfter5) queryDate = queryDate.plus({ day: 1 });
-        if (this.holidays.isPublicHoliday(queryDate)) return queryDate;
-        const open = this.times.getDate(queryDate);
-
-        return open[1];
-      }
 
       if (isAfterLunch) {
-        const open = this.times.getDate(queryDate);
+        const updatedDate = queryDate.plus({ day: 1 }).startOf('day');
+        const open = this.times.getDate(updatedDate);
 
-        return open[3];
+        const gapInOpeningTimes = this.updateAfterGap(updatedDate);
+
+        return gapInOpeningTimes ? gapInOpeningTimes[0] : open[0];
       }
-    };
+
+      const isBeforeOpen = this.times.beforeOpen(queryDate);
+      const open = this.times.getDate(queryDate)
+
+      return isBeforeOpen ? open[0] : open[2];
+    }
+
+    return gapInOpeningTimes[0];
+  };
+
+
+  /**
+   * At what date/time will the shop next be closed
+   * If provided a DateTime object, check relative to that, otherwise use now
+   * If the shop is already closed, return the provided datetime/now
+   *
+   * @param {Date} date
+   * @return {Date} date
+   */
+  nextClosed(date) {
+    let queryDate = date ? date : DateTime.local();
+
+    if (this.isOpen(queryDate)) {
+      const isAfterLunch = this.times.afterLunch(queryDate);
+      const closed = this.times.getDate(queryDate);
+
+      return isAfterLunch ? closed[3] : closed[1];
+    } 
+
+    return queryDate.toJSDate();
+  };
 }
